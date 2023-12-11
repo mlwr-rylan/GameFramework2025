@@ -5,7 +5,7 @@
 
 bool Engine::m_applicationShouldClose = false;
 Scene** Engine::m_scenes = new Scene*;
-ActorArray Engine::m_actorsToDelete = ActorArray();
+
 int Engine::m_sceneCount = 0;
 int Engine::m_currentSceneIndex = 0;
 
@@ -103,59 +103,77 @@ int Engine::getCurrentSceneIndex()
 int Engine::addScene(Scene* scene)
 {
 	//If the scene is null then return before running any other logic
-
+	if(!scene)
+	{
+		return -1;
+	}
+	
 	//Create a new array with a size one greater than our old array
-
+	Scene** scene3 = new Scene* [m_sceneCount + 1];
 	//Copy the values from the old array to the new array
-
+	for (int i = 0; i < m_sceneCount; i++)
+	{
+		scene3[i] =  m_scenes[i];
+	}
+	
 	//Store the current index
 
+	int currentIndex = m_sceneCount;
 	//Set the last value in the new array to be the scene we want to add
 
+	scene3[currentIndex] = scene;
 	//Sets the scene at the new index to be the scene passed in
 
 	//Set old array to hold the values of the new array
-
+	scene3 = m_scenes;
 	//Increase the scene count by one
-
+	m_sceneCount++;
 	//Return the index this scene is at
+	return currentIndex;
 }
 
-void Engine::addActorToDeletionList(Actor* actor)
-{
-	//return if the actor is already going to be deleted
-	if (m_actorsToDelete.contains(actor))
-		return;
 
-	//Add actor to deletion list
-	m_actorsToDelete.addActor(actor);
-
-	//Add all the actors children to the deletion list
-	for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
-	{
-		m_actorsToDelete.addActor(actor->getTransform()->getChildren()[i]->getOwner());
-	}
-}
 
 bool Engine::removeScene(Scene* scene)
 {
 	//Exit the function if the scene was null
-
+	if (!scene)
+	{
+		return false;
+	}
 	//Create variable to store if the scene was removed
-
+	
+	bool sceneRemoved = false;
 	//Create a new temporary array with a size one less than our old array
-
+	 
+	Scene** temu = new Scene *[m_sceneCount - 1];
 	//Create variable to access temporary array index
-
+	int j = 0;
 	//Copy values from the old array to the new array except the scene to delete
-		//If the actor to delete was skipped, set the scene removed variable to true.
+	 for (int i = 0; i < m_sceneCount; i++)
+	 {
+		 if (m_scenes[i] == scene)
+		 {//If the actor to delete was skipped, set the scene removed variable to true.
+			 sceneRemoved = true;
+			 continue;
+		 }	
+		 temu[j] = m_scenes[i];
+			j++;
+	 }
+		//Set the old array to the new array and decrease the scene count if the actor was removed
+	 if (sceneRemoved)
+	 {
+		 delete[] m_scenes;
+		 m_scenes = temu;
+		 m_sceneCount--;
 
+	 }
 
-	//Set the old array to the new array and decrease the scene count if the actor was removed
+		//Return whether or not the removal was successful
+	 return sceneRemoved;
+	
 
-	//Delete the temporary array
-
-	//Return whether or not the removal was successful
+	
 }
 
 void Engine::setCurrentScene(int index)
@@ -187,27 +205,6 @@ void Engine::destroy(Actor* actor)
 	addActorToDeletionList(actor);
 }
 
-void Engine::destroyActorsInList()
-{
-	//Iterate through deletion list
-	for (int i = 0; i < m_actorsToDelete.getLength(); i++)
-	{
-		//Remove actor from the scene
-		Actor* actorToDelete = m_actorsToDelete.getActor(i);
-		if (!getCurrentScene()->removeActor(actorToDelete))
-			getCurrentScene()->removeUIElement(actorToDelete);
-
-		//Call actors clean up functions
-		actorToDelete->end();
-		actorToDelete->onDestroy();
-
-		//Delete the actor
-		delete actorToDelete;
-	}
-
-	//Clear the array
-	m_actorsToDelete = ActorArray();
-}
 
 void Engine::CloseApplication()
 {
