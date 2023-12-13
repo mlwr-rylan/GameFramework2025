@@ -151,9 +151,10 @@
     <ClCompile Include="ActorArray.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="comp.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -166,8 +167,9 @@
     <ClInclude Include="ActorArray.h" />
     <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="Collider.h" />
-    <ClInclude Include="comp.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sprite.h" />

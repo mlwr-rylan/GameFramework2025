@@ -132,6 +132,21 @@ int Engine::addScene(Scene* scene)
 	return currentIndex;
 }
 
+void Engine::addActorToDeletionList(Actor* actor)
+{
+	//return if the actor is already going to be deleted
+	if (m_actorsToDelete.contains(actor))
+		return;
+
+	//Add actor to deletion list
+	m_actorsToDelete.addActor(actor);
+
+	//Add all the actors children to the deletion list
+	for (int i = 0; i < actor->getTransform()->getChildCount(); i++)
+	{
+		m_actorsToDelete.addActor(actor->getTransform()->getChildren()[i]->getOwner());
+	}
+}
 
 
 bool Engine::removeScene(Scene* scene)
@@ -203,6 +218,11 @@ bool Engine::getKeyPressed(int key)
 void Engine::destroy(Actor* actor)
 {
 	addActorToDeletionList(actor);
+}
+
+void Engine::destroyActorsInList()
+{
+
 }
 
 
